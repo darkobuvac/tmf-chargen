@@ -30,22 +30,28 @@ public static class ArgumentParser
         """"
             dotnet-tmfchargen
 
-            Usage: dotnet-tmfchargen [options] [
+            Usage: dotnet-tmfchargen [options] [value]
 
             The following arguments are required to run:
                 --type              Specifies the type of specification to scaffold characteristics for. Supported values are:  
                                     - `service`  
                                     - `resource`
-                --host              Hostname to use when constructing URLs for catalog management services. Defaults to `127.0.0.1`.
-                --port              Port number of the service. Defaults to `40207`.
-                --spec-name         The name of the specification(s) whose characteristics will be used for class generation. Multiple specifications can be separated by commas.
                 --namespace         The namespace for the generated class file.
             The following arguments are optional:
+                --host              Hostname to use when constructing URLs for catalog management services. Defaults to `127.0.0.1`.
+                --port              Port number of the service. Defaults to `40207`.
+                --spec-name         The name of the specification(s) whose characteristics will be used for class generation. Multiple specifications can be separate by commas. If none provided, all specs will be fetched from catalog.
                 --catalog           Absolute URL for the catalog management service. If not provided, a URL is constructed using `--host` and `--port`.
             """";
 
     public static GeneratorArguments Parse(string[] args)
     {
+        if (args.Length == 0)
+        {
+            Logger.LogInfo(UsageText);
+            Environment.Exit(1);
+        }
+
         try
         {
             var argList = args.ToList();
@@ -68,10 +74,16 @@ public static class ArgumentParser
             var specUrl = _specUrls[specType];
 
             if (!TryGetArgumentValue("--host", argList, out var host))
+            {
                 host = "127.0.0.1";
+                Logger.LogInfo($"--host parameter not provided. Using default value: {host}");
+            }
 
             if (!TryGetArgumentValue("--port", argList, out var port))
+            {
                 port = "40207";
+                Logger.LogInfo($"--port parameter not provided. Using default value: {host}");
+            }
 
             if (
                 !TryGetArgumentValue("--catalog", argList, out var catalog)
