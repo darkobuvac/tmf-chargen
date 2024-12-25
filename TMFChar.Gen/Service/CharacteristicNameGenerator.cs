@@ -45,11 +45,13 @@ public class CharacteristicNameGenerator(
 
             await File.WriteAllTextAsync(filePath, content, cancellationToken);
 
-            Logger.LogInfo($"File '{fileName}' has been successfully created at: {filePath}");
+            ConsoleLogger.LogInfo(
+                $"File '{fileName}' has been successfully created at: {filePath}"
+            );
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message);
+            ConsoleLogger.LogError(ex.Message);
             throw;
         }
     }

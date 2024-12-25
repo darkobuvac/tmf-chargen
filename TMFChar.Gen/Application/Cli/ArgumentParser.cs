@@ -48,7 +48,7 @@ public static class ArgumentParser
     {
         if (args.Length == 0)
         {
-            Logger.LogInfo(UsageText);
+            ConsoleLogger.LogInfo(UsageText);
             Environment.Exit(1);
         }
 
@@ -76,13 +76,17 @@ public static class ArgumentParser
             if (!TryGetArgumentValue("--host", argList, out var host))
             {
                 host = "127.0.0.1";
-                Logger.LogInfo($"--host parameter not provided. Using default value: {host}");
+                ConsoleLogger.LogInfo(
+                    $"--host parameter not provided. Using default value: {host}"
+                );
             }
 
             if (!TryGetArgumentValue("--port", argList, out var port))
             {
                 port = "40207";
-                Logger.LogInfo($"--port parameter not provided. Using default value: {host}");
+                ConsoleLogger.LogInfo(
+                    $"--port parameter not provided. Using default value: {host}"
+                );
             }
 
             if (
@@ -103,7 +107,7 @@ public static class ArgumentParser
 
             if (!TryGetArgumentValue("--spec-name", argList, out var specName))
             {
-                Logger.LogInfo(
+                ConsoleLogger.LogInfo(
                     "No specific specification name provided. All specifications will be fetched, and characteristics name will be generated."
                 );
                 all = true;
@@ -115,8 +119,8 @@ public static class ArgumentParser
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex.Message);
-            Logger.LogInfo(UsageText);
+            ConsoleLogger.LogError(ex.Message);
+            ConsoleLogger.LogInfo(UsageText);
             throw;
         }
     }

@@ -19,7 +19,7 @@ try
 
     Console.CancelKeyPress += (sender, e) =>
     {
-        Logger.LogWarning("Cancellation requested. Please wait...");
+        ConsoleLogger.LogWarning("Cancellation requested. Please wait...");
         cancellationTokenSource.Cancel();
         e.Cancel = true;
     };
@@ -28,6 +28,6 @@ try
 }
 catch (Exception ex)
 {
-    Logger.LogError(ex.Message);
+    ConsoleLogger.LogError(ex.Message);
     Environment.Exit(1);
 }
