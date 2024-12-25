@@ -25,3 +25,24 @@ Before using `dotnet-tmfchargen`, make sure you have the following:
    ```bash
    git clone <repository-url>
    cd <repository-folder>
+   ```
+
+
+### Usage
+
+```
+INFO: dotnet-tmfchargen
+
+Usage: dotnet-tmfchargen [options] [
+
+The following arguments are required to run:
+    --type              Specifies the type of specification to scaffold characteristics for. Supported values are:
+                        - `service`
+                        - `resource`
+    --host              Hostname to use when constructing URLs for catalog management services. Defaults to `127.0.0.1`.
+    --port              Port number of the service. Defaults to `40207`.
+    --spec-name         The name of the specification(s) whose characteristics will be used for class generation. Multiple specifications can be separated by commas.
+    --namespace         The namespace for the generated class file.
+The following arguments are optional:
+    --catalog           Absolute URL for the catalog management service. If not provided, a URL is constructed using `--host` and `--port`.
+```
