@@ -8,12 +8,16 @@
       <PackAsTool>true</PackAsTool>
       <ToolCommandName>dotnet-tmfchargen</ToolCommandName>
       <PackageOutputPath>./nupkg</PackageOutputPath>
-      <Version>1.0.2</Version>
+      <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageReference Include="TmfApiClients" Version="8.4.0" />  
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Examples\" />
   </ItemGroup>
 
 </Project>

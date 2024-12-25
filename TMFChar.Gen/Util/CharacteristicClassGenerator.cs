@@ -14,7 +14,7 @@ public class CharacteristicClassGenerator(string @namespace, string className, L
     public string Build()
     {
         var namespaceDeclaration = SyntaxFactory
-            .NamespaceDeclaration(SyntaxFactory.ParseName(_namespace))
+            .FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(_namespace))
             .AddMembers(GenerateCharacteristicsClass());
         var compilationUnit = SyntaxFactory.CompilationUnit().AddMembers(namespaceDeclaration);
 
