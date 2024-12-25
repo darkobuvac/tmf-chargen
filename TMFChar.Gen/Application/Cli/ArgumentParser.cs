@@ -26,7 +26,7 @@ public static class ArgumentParser
         [SpecificationType.Resource] = "http://{0}:{1}/tmf-api/resourceCatalog/v4",
     };
 
-    private static string UsageText =>
+    public static string UsageText =>
         """"
             dotnet-tmfchargen
 
@@ -52,77 +52,62 @@ public static class ArgumentParser
             Environment.Exit(1);
         }
 
-        try
+        var argList = args.ToList();
+
+        if (
+            !TryGetArgumentValue("--type", argList, out var type)
+            || (type != "service" && type != "resource")
+        )
+            throw new InvalidOperationException(
+                $"provide --type, supported values are 'service' and 'resource'"
+            );
+
+        var specType = type switch
         {
-            var argList = args.ToList();
+            "service" => SpecificationType.Service,
+            "resource" => SpecificationType.Resource,
+            _ => throw new InvalidOperationException("Invalid type specified"),
+        };
 
-            if (
-                !TryGetArgumentValue("--type", argList, out var type)
-                || (type != "service" && type != "resource")
-            )
-                throw new InvalidOperationException(
-                    $"provide --type, supported values are 'service' and 'resource'"
-                );
+        var specUrl = _specUrls[specType];
 
-            var specType = type switch
-            {
-                "service" => SpecificationType.Service,
-                "resource" => SpecificationType.Resource,
-                _ => throw new InvalidOperationException("Invalid type specified"),
-            };
-
-            var specUrl = _specUrls[specType];
-
-            if (!TryGetArgumentValue("--host", argList, out var host))
-            {
-                host = "127.0.0.1";
-                ConsoleLogger.LogInfo(
-                    $"--host parameter not provided. Using default value: {host}"
-                );
-            }
-
-            if (!TryGetArgumentValue("--port", argList, out var port))
-            {
-                port = "40207";
-                ConsoleLogger.LogInfo(
-                    $"--port parameter not provided. Using default value: {host}"
-                );
-            }
-
-            if (
-                !TryGetArgumentValue("--catalog", argList, out var catalog)
-                && !string.IsNullOrEmpty(catalog)
-                && !Uri.IsWellFormedUriString(catalog, UriKind.Absolute)
-            )
-                throw new InvalidOperationException(
-                    $"Provided catalog url is in invalid URL format."
-                );
-            else if (string.IsNullOrEmpty(catalog))
-                catalog = string.Format(specUrl, host, port);
-
-            if (!TryGetArgumentValue("--namespace", argList, out var @namespace))
-                throw new InvalidOperationException($"namespace needs to be provided.");
-
-            var all = false;
-
-            if (!TryGetArgumentValue("--spec-name", argList, out var specName))
-            {
-                ConsoleLogger.LogInfo(
-                    "No specific specification name provided. All specifications will be fetched, and characteristics name will be generated."
-                );
-                all = true;
-            }
-
-            var specs = specName.Split(",").ToList();
-
-            return new GeneratorArguments(specType, host, port, @namespace, catalog, specs, all);
-        }
-        catch (Exception ex)
+        if (!TryGetArgumentValue("--host", argList, out var host))
         {
-            ConsoleLogger.LogError(ex.Message);
-            ConsoleLogger.LogInfo(UsageText);
-            throw;
+            host = "127.0.0.1";
+            ConsoleLogger.LogInfo($"--host parameter not provided. Using default value: {host}");
         }
+
+        if (!TryGetArgumentValue("--port", argList, out var port))
+        {
+            port = "40207";
+            ConsoleLogger.LogInfo($"--port parameter not provided. Using default value: {host}");
+        }
+
+        if (
+            !TryGetArgumentValue("--catalog", argList, out var catalog)
+            && !string.IsNullOrEmpty(catalog)
+            && !Uri.IsWellFormedUriString(catalog, UriKind.Absolute)
+        )
+            throw new InvalidOperationException($"Provided catalog url is in invalid URL format.");
+        else if (string.IsNullOrEmpty(catalog))
+            catalog = string.Format(specUrl, host, port);
+
+        if (!TryGetArgumentValue("--namespace", argList, out var @namespace))
+            throw new InvalidOperationException($"namespace needs to be provided.");
+
+        var all = false;
+
+        if (!TryGetArgumentValue("--spec-name", argList, out var specName))
+        {
+            ConsoleLogger.LogInfo(
+                "No specific specification name provided. All specifications will be fetched, and characteristics name will be generated."
+            );
+            all = true;
+        }
+
+        var specs = specName.Split(",").ToList();
+
+        return new GeneratorArguments(specType, host, port, @namespace, catalog, specs, all);
     }
 
     private static bool TryGetArgumentValue(

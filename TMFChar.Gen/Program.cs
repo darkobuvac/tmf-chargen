@@ -29,5 +29,6 @@ try
 catch (Exception ex)
 {
     ConsoleLogger.LogError(ex.Message);
+    ConsoleLogger.LogInfo(ArgumentParser.UsageText);
     Environment.Exit(1);
 }
