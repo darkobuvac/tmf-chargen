@@ -69,11 +69,15 @@ public class CharacteristicNameGenerator(
 
             var specs = await _serviceCatalog.ListServiceSpecificationsAsync(qp, cancellationToken);
 
-            return (specs.Items ?? [])
+            var svcChars = (specs.Items ?? [])
                 .SelectMany(s => s.SpecCharacteristic ?? [])
                 .DistinctBy(c => c.Name)
                 .Select(c => c.Name!)
                 .ToList();
+
+            CheckCharacteristics(svcChars);
+
+            return svcChars;
         }
 
         if (_generatorArguments.SpecificationType == SpecificationType.Resource)
@@ -88,13 +92,42 @@ public class CharacteristicNameGenerator(
                 cancellationToken
             );
 
-            return (specs.Items ?? [])
+            var rscChars = (specs.Items ?? [])
                 .SelectMany(s => s.ResourceSpecCharacteristic ?? [])
                 .DistinctBy(c => c.Name)
                 .Select(c => c.Name!)
                 .ToList();
+
+            CheckCharacteristics(rscChars);
+
+            return rscChars;
         }
 
         throw new InvalidOperationException($"Unsupported specification type.");
+    }
+
+    private static void CheckCharacteristics(List<string> characteristics)
+    {
+        var charsWithSpecialCharacters = characteristics.Where(c =>
+            c.Any(ch => !char.IsLetterOrDigit(ch))
+        );
+
+        if (charsWithSpecialCharacters.Any())
+            ConsoleLogger.LogWarning(
+                $"Some characteristic names contain special characters: {string.Join(",", charsWithSpecialCharacters)}."
+            );
+
+        var charGroup = characteristics.GroupBy(c => c.ToLowerInvariant());
+        var charDict = charGroup.ToDictionary(g => g.Key, g => g.ToList());
+
+        foreach (var v in charDict.Values)
+        {
+            if (v.Count == 1)
+                continue;
+
+            ConsoleLogger.LogWarning(
+                $"Multiple characteristics with the same name but different casing were found: {string.Join(",", v)}."
+            );
+        }
     }
 }
