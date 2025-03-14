@@ -26,6 +26,16 @@ Before using `dotnet-tmfchargen`, make sure you have the following:
    git clone <repository-url>
    cd <repository-folder>
    ```
+2. Pack dotnet tool:
+
+   ```
+   dotnet pack
+   ```
+3. Install dotnet tool:
+
+   ```
+   dotnet tool install --global --add-source .\TMFChar.Gen\nupkg\ TMFChar.Gen
+   ```
 
 ### Usage
 
@@ -46,7 +56,7 @@ The following arguments are optional:
     --catalog           Absolute URL for the catalog management service. If not provided, a URL is constructed using `--host` and `--port`.
 ```
 
-### Example
+### Example usage
 
 ```
 dotnet-tmfchargen --type service --namespace TMFChar.Gen --host localhost --port 40633
