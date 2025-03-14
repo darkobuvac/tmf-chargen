@@ -45,8 +45,9 @@ public class CharacteristicClassGenerator(string @namespace, string className, L
 
     private static PropertyDeclarationSyntax GeneratePropertyDeclaration(string name)
     {
-        var fieldName = $"_{ConvertToCamelCase(name)}";
-        var propName = ConvertToPascalCase(name);
+        var formatedName = new string(name.Where(char.IsLetterOrDigit).ToArray());
+        var fieldName = $"_{ConvertToCamelCase(formatedName)}";
+        var propName = ConvertToPascalCase(formatedName);
 
         return SyntaxFactory
             .PropertyDeclaration(SyntaxFactory.ParseTypeName("string"), propName)
@@ -75,7 +76,8 @@ public class CharacteristicClassGenerator(string @namespace, string className, L
 
     private FieldDeclarationSyntax GenerateFieldDeclaration(string name)
     {
-        var fieldName = $"_{ConvertToCamelCase(name)}";
+        var formatedName = new string(name.Where(char.IsLetterOrDigit).ToArray());
+        var fieldName = $"_{ConvertToCamelCase(formatedName)}";
 
         return SyntaxFactory
             .FieldDeclaration(
