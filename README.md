@@ -27,7 +27,6 @@ Before using `dotnet-tmfchargen`, make sure you have the following:
    cd <repository-folder>
    ```
 
-
 ### Usage
 
 ```
@@ -45,4 +44,10 @@ The following arguments are optional:
     --port              Port number of the service. Defaults to `40207`.
     --spec-name         The name of the specification(s) whose characteristics will be used for class generation. Multiple specifications can be separate by commas. If none provided, all specs will be fetched from catalog.
     --catalog           Absolute URL for the catalog management service. If not provided, a URL is constructed using `--host` and `--port`.
+```
+
+### Example
+
+```
+dotnet-tmfchargen --type service --namespace TMFChar.Gen --host localhost --port 40633
 ```
