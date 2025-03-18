@@ -40,6 +40,9 @@ public class CharacteristicClassGenerator(string @namespace, string className, L
         var properties = _fields.Select(GeneratePropertyDeclaration).ToArray();
         classDeclaration = classDeclaration.AddMembers(properties);
 
+        var getMehod = GenerateGetMethod();
+        classDeclaration = classDeclaration.AddMembers(getMehod);
+
         return classDeclaration;
     }
 
